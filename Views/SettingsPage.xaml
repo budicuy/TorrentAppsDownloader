@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Page
+    x:Class="TorrentApp.Views.SettingsPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    Background="Transparent">
+
+    <ScrollViewer>
+        <StackPanel Margin="{StaticResource PagePadding}" Spacing="24" MaxWidth="640">
+
+            <!-- Page Title -->
+            <TextBlock Text="Settings" Style="{StaticResource TitleTextBlockStyle}" />
+
+            <!-- ============================================================
+                 Download Location
+            ============================================================ -->
+            <StackPanel Spacing="8">
+                <TextBlock Text="DOWNLOAD LOCATION" Style="{StaticResource SectionHeaderStyle}" />
+                <Border Style="{StaticResource TorrentCardStyle}">
+                    <StackPanel Spacing="12">
+                        <TextBlock Text="Default save folder" Style="{StaticResource BodyStrongTextBlockStyle}" />
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="8" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                            <TextBox
+                                Grid.Column="0"
+                                x:Name="SavePathBox"
+                                Text="{x:Bind ViewModel.DefaultSavePath, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                PlaceholderText="e.g. C:\Users\You\Downloads\Torrents"
+                                IsSpellCheckEnabled="False" />
+                            <Button
+                                Grid.Column="2"
+                                Click="BrowseFolderButton_Click"
+                                ToolTipService.ToolTip="Browse for folder">
+                                <FontIcon Glyph="&#xE838;" FontSize="14" />
+                            </Button>
+                        </Grid>
+                    </StackPanel>
+                </Border>
+            </StackPanel>
+
+            <!-- ============================================================
+                 Speed Limits
+            ============================================================ -->
+            <StackPanel Spacing="8">
+                <TextBlock Text="SPEED LIMITS" Style="{StaticResource SectionHeaderStyle}" />
+                <Border Style="{StaticResource TorrentCardStyle}">
+                    <StackPanel Spacing="16">
+
+                        <!-- Download limit -->
+                        <StackPanel Spacing="6">
+                            <StackPanel Orientation="Horizontal" Spacing="6">
+                                <FontIcon Glyph="&#xE896;" FontSize="14"
+                                    Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
+                                <TextBlock Text="Download limit" Style="{StaticResource BodyStrongTextBlockStyle}" />
+                            </StackPanel>
+                            <ComboBox
+                                x:Name="DownloadLimitCombo"
+                                SelectedIndex="{x:Bind ViewModel.MaxDownloadSpeedIndex, Mode=TwoWay}"
+                                HorizontalAlignment="Stretch">
+                                <ComboBoxItem Content="Unlimited" />
+                                <ComboBoxItem Content="100 KB/s" />
+                                <ComboBoxItem Content="500 KB/s" />
+                                <ComboBoxItem Content="1 MB/s" />
+                                <ComboBoxItem Content="5 MB/s" />
+                                <ComboBoxItem Content="10 MB/s" />
+                            </ComboBox>
+                        </StackPanel>
+
+                        <!-- Upload limit -->
+                        <StackPanel Spacing="6">
+                            <StackPanel Orientation="Horizontal" Spacing="6">
+                                <FontIcon Glyph="&#xE898;" FontSize="14"
+                                    Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
+                                <TextBlock Text="Upload limit" Style="{StaticResource BodyStrongTextBlockStyle}" />
+                            </StackPanel>
+                            <ComboBox
+                                x:Name="UploadLimitCombo"
+                                SelectedIndex="{x:Bind ViewModel.MaxUploadSpeedIndex, Mode=TwoWay}"
+                                HorizontalAlignment="Stretch">
+                                <ComboBoxItem Content="Unlimited" />
+                                <ComboBoxItem Content="100 KB/s" />
+                                <ComboBoxItem Content="500 KB/s" />
+                                <ComboBoxItem Content="1 MB/s" />
+                                <ComboBoxItem Content="5 MB/s" />
+                                <ComboBoxItem Content="10 MB/s" />
+                            </ComboBox>
+                        </StackPanel>
+                    </StackPanel>
+                </Border>
+            </StackPanel>
+
+            <!-- ============================================================
+                 Appearance
+            ============================================================ -->
+            <StackPanel Spacing="8">
+                <TextBlock Text="APPEARANCE" Style="{StaticResource SectionHeaderStyle}" />
+                <Border Style="{StaticResource TorrentCardStyle}">
+                    <StackPanel Spacing="12">
+                        <TextBlock Text="Theme" Style="{StaticResource BodyStrongTextBlockStyle}" />
+                        <ComboBox
+                            x:Name="ThemeCombo"
+                            SelectedItem="{x:Bind ViewModel.SelectedTheme, Mode=TwoWay}"
+                            HorizontalAlignment="Stretch">
+                            <ComboBoxItem Content="System" />
+                            <ComboBoxItem Content="Light" />
+                            <ComboBoxItem Content="Dark" />
+                        </ComboBox>
+                    </StackPanel>
+                </Border>
+            </StackPanel>
+
+            <!-- ============================================================
+                 Save button + status
+            ============================================================ -->
+            <StackPanel Orientation="Horizontal" Spacing="12">
+                <Button
+                    Content="Save Settings"
+                    Style="{StaticResource AccentButtonStyle}"
+                    Command="{x:Bind ViewModel.SaveSettingsCommand}" />
+                <TextBlock
+                    Text="{x:Bind ViewModel.StatusMessage, Mode=OneWay}"
+                    Style="{StaticResource BodyTextBlockStyle}"
+                    VerticalAlignment="Center"
+                    Foreground="{StaticResource CompletedBrush}"
+                    Visibility="{x:Bind ViewModel.HasStatusMessage, Mode=OneWay}" />
+            </StackPanel>
+
+        </StackPanel>
+    </ScrollViewer>
+</Page>

@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "TorrentApp (Package)": {
+      "commandName": "MsixPackage"
+    },
+    "TorrentApp (Unpackaged)": {
+      "commandName": "Project"
+    }
+  }
+}
