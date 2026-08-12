@@ -6,19 +6,14 @@ namespace TorrentApp;
 
 /// <summary>
 /// Main application window. Hosts a <see cref="NavigationView"/> with Downloads,
-/// Completed, and Settings pages. Navigation state lives here; business logic lives
-/// in ViewModels and Services.
+/// Completed, and Settings pages.
 /// </summary>
 public sealed partial class MainWindow : Window
 {
     public MainWindow()
     {
         InitializeComponent();
-
-        // WinUI 1.5+ TitleBar control handles ExtendsContentIntoTitleBar automatically.
-        // We only need to call SetTitleBar so drag regions work correctly.
-        ExtendsContentIntoTitleBar = true;
-        SetTitleBar(AppTitleBar);
+        Title = "TorrentApp";
     }
 
     private void NavView_Loaded(object sender, RoutedEventArgs e)

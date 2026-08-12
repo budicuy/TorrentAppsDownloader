@@ -23,8 +23,23 @@ internal sealed class SettingsService : ISettingsService
     public SettingsService(ILogger<SettingsService> logger)
     {
         _logger = logger;
-        string localFolder = ApplicationData.Current.LocalFolder.Path;
+        string localFolder = GetLocalDataFolder();
         _settingsFilePath = Path.Combine(localFolder, "settings.json");
+    }
+
+    private static string GetLocalDataFolder()
+    {
+        try
+        {
+            return ApplicationData.Current.LocalFolder.Path;
+        }
+        catch
+        {
+            string appData = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
+            string folder = Path.Combine(appData, "TorrentApp");
+            Directory.CreateDirectory(folder);
+            return folder;
+        }
     }
 
     public async Task LoadAsync(CancellationToken cancellationToken = default)

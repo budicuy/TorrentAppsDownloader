@@ -9,31 +9,10 @@
     Title="TorrentApp"
     mc:Ignorable="d">
 
-    <Window.SystemBackdrop>
-        <MicaBackdrop Kind="BaseAlt" />
-    </Window.SystemBackdrop>
-
     <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="*" />
-        </Grid.RowDefinitions>
-
-        <!-- Custom Title Bar -->
-        <TitleBar
-            x:Name="AppTitleBar"
-            Title="TorrentApp"
-            Subtitle=""
-            Grid.Row="0">
-            <TitleBar.IconSource>
-                <ImageIconSource ImageSource="Assets/logo.png" />
-            </TitleBar.IconSource>
-        </TitleBar>
-
         <!-- Navigation Shell -->
         <NavigationView
             x:Name="NavView"
-            Grid.Row="1"
             IsBackButtonVisible="Collapsed"
             IsSettingsVisible="True"
             PaneDisplayMode="Left"
@@ -63,8 +42,6 @@
                     </NavigationViewItem.Icon>
                 </NavigationViewItem>
             </NavigationView.MenuItems>
-
-            <!-- Settings item is built-in (IsSettingsVisible=True) -->
 
             <Frame x:Name="ContentFrame" />
         </NavigationView>

@@ -22,39 +22,54 @@ public partial class App : Application
     public static Microsoft.UI.Dispatching.DispatcherQueue DispatcherQueue { get; private set; } = null!;
 
     /// <summary>Native window handle (HWND) for WinRT interop (pickers, etc.).</summary>
-    public static nint WindowHandle => WinRT.Interop.WindowNative.GetWindowHandle(Window);
+    public static nint WindowHandle => Window is not null ? WinRT.Interop.WindowNative.GetWindowHandle(Window) : 0;
 
     private readonly CancellationTokenSource _shutdownCts = new();
 
     public App()
     {
         Services = ConfigureServices();
+        UnhandledException += OnUnhandledException;
         InitializeComponent();
+    }
+
+    private void OnUnhandledException(object sender, Microsoft.UI.Xaml.UnhandledExceptionEventArgs e)
+    {
+        e.Handled = true;
+        ILogger<App>? logger = Services.GetService<ILogger<App>>();
+        logger?.LogError(e.Exception, "Unhandled UI thread exception");
     }
 
     protected override async void OnLaunched(LaunchActivatedEventArgs args)
     {
         DispatcherQueue = Microsoft.UI.Dispatching.DispatcherQueue.GetForCurrentThread();
 
-        // Initialize settings first so the engine can use them.
-        ISettingsService settings = Services.GetRequiredService<ISettingsService>();
-        await settings.LoadAsync(_shutdownCts.Token).ConfigureAwait(true);
-
-        // Apply theme from settings.
-        ApplyTheme(settings.Settings.Theme);
-
-        // Start the BitTorrent engine and restore persisted torrents.
-        ITorrentService torrentService = Services.GetRequiredService<ITorrentService>();
-        await torrentService.InitializeAsync(_shutdownCts.Token).ConfigureAwait(true);
-
-        // Apply speed limits from settings.
-        await torrentService.ApplySpeedLimitsAsync(
-            settings.Settings.MaxDownloadSpeedBps,
-            settings.Settings.MaxUploadSpeedBps).ConfigureAwait(true);
-
+        // WinUI 3 Requirement: Window creation and Window.Activate() MUST happen immediately
+        // on launch before any asynchronous await, otherwise the OS terminates the process.
         Window = new MainWindow();
         Window.Closed += OnWindowClosed;
         Window.Activate();
+
+        try
+        {
+            // Initialize settings and engine in the background.
+            ISettingsService settings = Services.GetRequiredService<ISettingsService>();
+            await settings.LoadAsync(_shutdownCts.Token).ConfigureAwait(true);
+
+            ApplyTheme(settings.Settings.Theme);
+
+            ITorrentService torrentService = Services.GetRequiredService<ITorrentService>();
+            await torrentService.InitializeAsync(_shutdownCts.Token).ConfigureAwait(true);
+
+            await torrentService.ApplySpeedLimitsAsync(
+                settings.Settings.MaxDownloadSpeedBps,
+                settings.Settings.MaxUploadSpeedBps).ConfigureAwait(true);
+        }
+        catch (Exception ex)
+        {
+            ILogger<App>? logger = Services.GetService<ILogger<App>>();
+            logger?.LogError(ex, "Error initializing background services.");
+        }
     }
 
     private async void OnWindowClosed(object sender, WindowEventArgs args)

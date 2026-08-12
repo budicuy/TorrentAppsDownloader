@@ -42,9 +42,24 @@ internal sealed class TorrentService : ITorrentService
     public TorrentService(ILogger<TorrentService> logger)
     {
         _logger = logger;
-        string localFolder = ApplicationData.Current.LocalFolder.Path;
+        string localFolder = GetLocalDataFolder();
         _dataFolder = Path.Combine(localFolder, "engine");
         _torrentFileFolder = Path.Combine(_dataFolder, "torrents");
+    }
+
+    private static string GetLocalDataFolder()
+    {
+        try
+        {
+            return ApplicationData.Current.LocalFolder.Path;
+        }
+        catch
+        {
+            string appData = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
+            string folder = Path.Combine(appData, "TorrentApp");
+            Directory.CreateDirectory(folder);
+            return folder;
+        }
     }
 
     // -----------------------------------------------------------------------
