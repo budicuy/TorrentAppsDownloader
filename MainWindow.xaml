@@ -26,7 +26,7 @@
             Subtitle=""
             Grid.Row="0">
             <TitleBar.IconSource>
-                <ImageIconSource ImageSource="Assets/AppIcon.ico" />
+                <ImageIconSource ImageSource="Assets/logo.png" />
             </TitleBar.IconSource>
         </TitleBar>
 
