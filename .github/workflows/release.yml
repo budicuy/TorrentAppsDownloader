@@ -45,7 +45,7 @@ jobs:
         run: |
           Remove-Item -Path "staging" -Recurse -Force -ErrorAction SilentlyContinue
           Remove-Item -Path "output" -Recurse -Force -ErrorAction SilentlyContinue
-          dotnet publish TorrentApp.csproj -c Release -r win-x64 --self-contained true -p:WindowsPackageType=None -p:PublishDir="${{ github.workspace }}\staging\"
+          dotnet publish TorrentApp.csproj -c Release -r win-x64 --self-contained false -p:WindowsPackageType=None -p:PublishDir="${{ github.workspace }}\staging\"
           Remove-Item -Path "staging\*.pdb" -Force -ErrorAction SilentlyContinue
 
       - name: Compile Inno Setup Installer (.exe)
