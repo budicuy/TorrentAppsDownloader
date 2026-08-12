@@ -40,13 +40,13 @@ jobs:
       - name: Restore Dependencies
         run: dotnet restore TorrentApp.csproj
 
-      - name: Publish WinUI 3 App (Clean Isolated Folder)
+      - name: Publish WinUI 3 App (Unpackaged)
         shell: powershell
         run: |
-          Remove-Item -Path "staging" -Recurse -Force -ErrorAction SilentlyContinue
+          Remove-Item -Path "bin\Release" -Recurse -Force -ErrorAction SilentlyContinue
           Remove-Item -Path "output" -Recurse -Force -ErrorAction SilentlyContinue
-          dotnet publish TorrentApp.csproj -c Release -r win-x64 --self-contained false -p:WindowsPackageType=None -p:PublishDir="${{ github.workspace }}\staging\"
-          Remove-Item -Path "staging\*.pdb" -Force -ErrorAction SilentlyContinue
+          dotnet publish TorrentApp.csproj -c Release -r win-x64 --self-contained false -p:WindowsPackageType=None
+          Remove-Item -Path "bin\Release\net10.0-windows10.0.26100.0\win-x64\*.pdb" -Force -ErrorAction SilentlyContinue
 
       - name: Compile Inno Setup Installer (.exe)
         run: |
@@ -56,7 +56,7 @@ jobs:
         shell: powershell
         run: |
           New-Item -ItemType Directory -Path "output" -ErrorAction SilentlyContinue
-          Compress-Archive -Path "staging\*" -DestinationPath "output\TorrentApp-portable-x64.zip"
+          Compress-Archive -Path "bin\Release\net10.0-windows10.0.26100.0\win-x64\*" -DestinationPath "output\TorrentApp-portable-x64.zip"
 
       - name: Create GitHub Release and Upload Assets
         uses: softprops/action-gh-release@v2
