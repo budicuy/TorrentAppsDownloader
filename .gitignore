@@ -40,6 +40,9 @@ BundleArtifacts/
 
 # Publish output
 publish/
+staging/
+output/
+publish_framework/
 *.pubxml
 PublishScripts/
 
